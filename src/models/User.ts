@@ -5,11 +5,10 @@ export interface IUser {
   name: string;
   avatar: string;
   levels: {
-    english: number;
-    help: number;
-    active: number;
+    [key: string]: number;
   };
   rank: number;
+  save: () => void;
 }
 
 const levelsSchema = new Schema({

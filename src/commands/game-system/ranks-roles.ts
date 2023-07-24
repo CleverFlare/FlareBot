@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import RanksRoles from "../models/ranks-roles";
-import { ranks } from "../ranks";
-import RanksRoles from "../models/ranks-roles";
+import RankRoles from "../../models/RankRoles";
+import { ranks } from "../../data/ranks";
 
 export default {
   data: new SlashCommandBuilder()
@@ -17,7 +16,7 @@ export default {
     )
     .addRoleOption((option) =>
       option
-        .setName("apprentice")
+        .setName("talented")
         .setDescription("Add role for the Apprentice rank")
         .setRequired(true)
     )
@@ -41,29 +40,28 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    const rankRoles = await RanksRoles.find();
-    RanksRoles.create([
+    await RankRoles.create(
       {
         rank: ranks[0].name,
-        role: interaction.options.get("rookie")!.role,
+        role: interaction.options.get("rookie")!.value,
       },
       {
         rank: ranks[1].name,
-        role: interaction.options.get("apprentice")!.role,
+        role: interaction.options.get("talented")!.value,
       },
       {
         rank: ranks[2].name,
-        role: interaction.options.get("skilled")!.role,
+        role: interaction.options.get("skilled")!.value,
       },
       {
         rank: ranks[3].name,
-        role: interaction.options.get("exceptional")!.role,
+        role: interaction.options.get("exceptional")!.value,
       },
       {
         rank: ranks[4].name,
-        role: interaction.options.get("elite")!.role,
-      },
-    ]);
+        role: interaction.options.get("elite")!.value,
+      }
+    );
     interaction.reply("The rank roles have been set successfully");
   },
 };

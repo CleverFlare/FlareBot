@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, Message, EmbedBuilder } from "discord.js";
-import { ranks } from "../ranks";
-import User, { IUser } from "../models/user";
+import { ranks } from "../../data/ranks";
+import User, { IUser } from "../../models/User";
 
 export default {
   data: new SlashCommandBuilder()

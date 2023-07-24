@@ -1,14 +1,14 @@
 import { Role } from "discord.js";
 import { Schema, model } from "mongoose";
 
-export interface IRanksRoles {
+export interface IRankRoles {
   rank: string;
   role: Role;
 }
 
-const RanksRolesSchema = new Schema({
+const RankRolesSchema = new Schema({
   rank: String,
   role: Object,
 });
 
-export default model("RanksRoles", RanksRolesSchema);
+export default model("RankRoles", RankRolesSchema);

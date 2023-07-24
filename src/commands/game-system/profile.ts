@@ -6,9 +6,9 @@ import {
   GuildMember,
   User as UserType,
 } from "discord.js";
-import { ranks } from "../ranks";
-import User, { IUser } from "../models/user";
-import { createAnEmptyUser } from "../utils/db";
+import { ranks } from "../../data/ranks";
+import User, { IUser } from "../../models/User";
+import { createAnEmptyUser } from "../../utils/db";
 
 interface Member {
   username: string;
