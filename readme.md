@@ -16,4 +16,4 @@ This project is a discord bot project for my personal use, it's designed to perf
 - [x] Add a leaderboard
 - [x] Add a leveling up command
 - [x] Add a profile command to see the profile
-- [ ] Extend the profile command to allow you to see others' profile
+- [x] Extend the profile command to allow you to see others' profile

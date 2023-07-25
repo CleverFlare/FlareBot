@@ -25,25 +25,43 @@ interface Member {
 export default {
   data: new SlashCommandBuilder()
     .setName("profile")
-    .setDescription("This command will show you your profile"),
+    .setDescription("This command will show you your profile")
+    .addUserOption((option) =>
+      option
+        .setName("user")
+        .setDescription("The user you wanna see their profile")
+    ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    const displayName =
-      (interaction.member as GuildMember).nickname || interaction.user.username;
+    const userOption = interaction.options.get("user");
+
+    const username = userOption?.user
+      ? userOption.user.username
+      : interaction.user.username;
+
+    const nickname = userOption?.member
+      ? (userOption.member as GuildMember).nickname
+      : (interaction.member as GuildMember).nickname;
+
+    const avatar = userOption?.user
+      ? userOption.user.avatarURL()
+      : interaction.user.avatarURL();
+
+    const displayName = nickname || username;
 
     const doesUserExist = await User.exists({
-      username: interaction.user.username,
+      username: username,
     });
     let user: IUser;
     if (!doesUserExist)
       user = await createAnEmptyUser({
-        username: interaction.user.username,
-        avatar: interaction.user.avatarURL() || "",
+        username: username,
+        avatar: avatar || "",
         displayName: displayName || "unknown",
       });
     else
       user = (await User.findOne({
-        username: interaction.user.username,
+        username: username,
       })) as IUser;
     // build the embed message
     const embedMessage = new EmbedBuilder()
