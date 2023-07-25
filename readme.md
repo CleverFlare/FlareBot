@@ -1,17 +1,19 @@
-# information about the project
+# Flare Bot
 
-to start the dev server, run the following command:
+This project is a discord bot project for my personal use, it's designed to perform multiple tasks, but its main goal is to ease certain routines and to keep server members engaged by things like the leveling and ranking systems etc etc...
 
-```
-npm run start:dev
-```
+## Technologies used for this project
 
-## information about the JSON storage
+- TypeScript
+- DiscordJS
+- MongoDB for the database
+- Mongoose for MongoDB ODM
 
-Here I'm using extendsClass JSON Storage Service, which is unlimited and free to use.
+## Roadmap
 
-| Key                                      | value                                             |
-| ---------------------------------------- | ------------------------------------------------- |
-| JSON storage ID                          | c637a590293b                                      |
-| URI to access this JSON bin              | https://json.extendsclass.com/bin/c637a590293b    |
-| URI to access this JSON in a text editor | https://extendsclass.com/jsonstorage/c637a590293b |
+- [x] Create the leveling system
+- [x] Create the ranking system
+- [x] Add a leaderboard
+- [x] Add a leveling up command
+- [x] Add a profile command to see the profile
+- [ ] Extend the profile command to allow you to see others' profile
