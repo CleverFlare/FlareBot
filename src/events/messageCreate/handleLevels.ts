@@ -25,7 +25,7 @@ export default async function (client: UserType, interaction: Message) {
 
   user.levels.active += 0.1;
   user.levels.english += 0.3;
-  if (interaction.channel!.type === 11) user!.levels.help += 1;
+  if (interaction.channel!.type === 11) user!.levels.help += 0.2;
 
   await (user as any).save();
 
