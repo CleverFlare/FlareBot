@@ -6,7 +6,9 @@ export default async function (client: Client, interaction: GuildMember) {
 
   if (!rankRoles.length) return;
 
-  const roleExists = interaction.guild?.roles.cache.find(rankRoles[0].role);
+  const roleExists = interaction.guild?.roles.cache.find(
+    (role) => role.id === rankRoles[0].role
+  );
 
   if (roleExists) await interaction.roles.add(rankRoles[0].role);
   else console.log("Couldn't assign the role to the member");
