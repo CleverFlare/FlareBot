@@ -7,6 +7,12 @@ export interface IUser {
   levels: {
     [key: string]: number;
   };
+  warnings: [
+    {
+      date: string;
+      reason: string;
+    }
+  ];
   rank: number;
   save: () => void;
 }
@@ -17,12 +23,40 @@ const levelsSchema = new Schema({
   active: Number,
 });
 
+const warningSchema = new Schema({
+  date: String,
+  reason: String,
+});
+
 const userSchema = new Schema<IUser>({
-  username: String,
-  name: String,
-  avatar: String,
-  levels: levelsSchema,
-  rank: Number,
+  username: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+    required: true,
+  },
+  levels: {
+    type: levelsSchema,
+    default: {
+      english: 0,
+      help: 0,
+      active: 0,
+    },
+  },
+  warnings: {
+    type: [warningSchema],
+    default: [],
+  },
+  rank: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default model("User", userSchema);

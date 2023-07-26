@@ -48,8 +48,16 @@ export default {
         },
       ]);
 
+    const actionDate = new Date();
+
+    const format = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+
     // send the embed message
     await interaction.reply({
+      content: `${format.format(actionDate)}`,
       embeds: [embedMessage],
     });
   },
