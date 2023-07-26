@@ -26,29 +26,33 @@ export default {
       option.setName("active").setDescription("Level up active")
     ),
   async execute(interaction: ChatInputCommandInteraction) {
-    const member = interaction.options.get("member");
-    const englishLevel = interaction.options.get("english")?.value;
-    const helpLevel = interaction.options.get("help")?.value;
-    const activeLevel = interaction.options.get("active")?.value;
-    const memberProfile = await User.findOne({
-      username: member!.user?.username,
-    });
+    try {
+      const member = interaction.options.get("member");
+      const englishLevel = interaction.options.get("english")?.value;
+      const helpLevel = interaction.options.get("help")?.value;
+      const activeLevel = interaction.options.get("active")?.value;
+      const memberProfile = await User.findOne({
+        username: member!.user?.username,
+      });
 
-    if (!memberProfile) {
-      interaction.reply(
-        "This user doesn't have a profile yet, they must do something in the server in order to create a profile for them"
-      );
-      return;
+      if (!memberProfile) {
+        interaction.reply(
+          "This user doesn't have a profile yet, they must do something in the server in order to create a profile for them"
+        );
+        return;
+      }
+
+      if (englishLevel) memberProfile.levels.english += Number(englishLevel);
+      if (helpLevel) memberProfile.levels.help += Number(helpLevel);
+      if (activeLevel) memberProfile.levels.active += Number(activeLevel);
+
+      await memberProfile.save();
+
+      interaction.client.emit("levelChange", memberProfile, interaction);
+
+      interaction.reply(`<@${member?.user?.id}> was leveled up! :rocket:`);
+    } catch (err) {
+      interaction.reply("Something went wrong, check out the logs");
     }
-
-    if (englishLevel) memberProfile.levels.english += Number(englishLevel);
-    if (helpLevel) memberProfile.levels.help += Number(helpLevel);
-    if (activeLevel) memberProfile.levels.active += Number(activeLevel);
-
-    await memberProfile.save();
-
-    interaction.client.emit("levelChange", memberProfile, interaction);
-
-    interaction.reply(`<@${member?.user?.id}> was leveled up! :rocket:`);
   },
 };

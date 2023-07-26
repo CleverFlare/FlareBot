@@ -18,63 +18,67 @@ export default {
         )
     ),
   async execute(interaction: ChatInputCommandInteraction) {
-    const userOption = interaction.options.get("user");
-    let users;
-    let embedMessage: EmbedBuilder | undefined;
+    try {
+      const userOption = interaction.options.get("user");
+      let users;
+      let embedMessage: EmbedBuilder | undefined;
 
-    if (userOption) {
-      users = await User.findOne({
-        username: userOption.user!.username,
-      });
+      if (userOption) {
+        users = await User.findOne({
+          username: userOption.user!.username,
+        });
 
-      embedMessage = new EmbedBuilder()
-        .setColor("#ff00ae")
-        .setThumbnail(userOption.user?.avatarURL() || "")
-        .setTitle((userOption.member as GuildMember).displayName)
-        .setFields(
-          users?.warnings.map((warning, index) => ({
-            name: `#${index + 1}`,
-            value: `**reason: **${warning.reason}`,
-          })) || [{ name: "Got no warnings", value: "\u200B" }]
-        );
-    } else {
-      users = await User.find({
-        warnings: { $exists: true, $not: { $size: 0 } },
-      });
-      const warningCounts: number[] = [];
-      const names: string[] = [];
+        embedMessage = new EmbedBuilder()
+          .setColor("#ff00ae")
+          .setThumbnail(userOption.user?.avatarURL() || "")
+          .setTitle((userOption.member as GuildMember).displayName)
+          .setFields(
+            users?.warnings.map((warning, index) => ({
+              name: `#${index + 1}`,
+              value: `**reason: **${warning.reason}\n`,
+            })) || [{ name: "Got no warnings", value: "\u200B" }]
+          );
+      } else {
+        users = await User.find({
+          warnings: { $exists: true, $not: { $size: 0 } },
+        });
+        const warningCounts: number[] = [];
+        const names: string[] = [];
 
-      for (const user of users) {
-        if (!user.warnings.length) continue;
+        for (const user of users) {
+          if (!user.warnings.length) continue;
 
-        names.push(user.name);
-        warningCounts.push(user.warnings.length);
+          names.push(user.name);
+          warningCounts.push(user.warnings.length);
+        }
+
+        embedMessage = new EmbedBuilder()
+          .setColor("#ff00ae")
+          .setTitle("Warned members")
+          .setDescription(
+            "This is a list of all the warned members and how many warnings they've got"
+          )
+          .addFields([
+            {
+              name: "Name",
+              value: `${names.map((name, index) => `${name}`).join("\n")}`,
+              inline: true,
+            },
+            {
+              name: "Warnings",
+              value: `${warningCounts
+                .map((warningCount) => `${warningCount}`)
+                .join("\n")}`,
+              inline: true,
+            },
+          ]);
       }
 
-      embedMessage = new EmbedBuilder()
-        .setColor("#ff00ae")
-        .setTitle("Warned members")
-        .setDescription(
-          "This is a list of all the warned members and how many warnings they've got"
-        )
-        .addFields([
-          {
-            name: "Name",
-            value: `${names.map((name, index) => `${name}`).join("\n")}`,
-            inline: true,
-          },
-          {
-            name: "Warnings",
-            value: `${warningCounts
-              .map((warningCount) => `${warningCount}`)
-              .join("\n")}`,
-            inline: true,
-          },
-        ]);
+      interaction.reply({
+        embeds: [embedMessage],
+      });
+    } catch (error) {
+      interaction.reply("Something went wrong, check out the logs");
     }
-
-    interaction.reply({
-      embeds: [embedMessage],
-    });
   },
 };

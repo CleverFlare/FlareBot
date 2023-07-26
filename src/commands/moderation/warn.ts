@@ -48,6 +48,12 @@ export default {
 
       await user?.save();
 
+      await (userOption.member as GuildMember).send(
+        `You've been warned, the reason for the warning is: ${
+          reasonOption.value as string
+        }`
+      );
+
       interaction.reply({
         content: `Member <@${
           interaction.options.get("user", true).user?.id

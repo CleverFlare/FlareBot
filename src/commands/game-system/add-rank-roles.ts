@@ -40,28 +40,32 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    await RankRoles.create(
-      {
-        rank: ranks[0].name,
-        role: interaction.options.get("rookie")!.value,
-      },
-      {
-        rank: ranks[1].name,
-        role: interaction.options.get("talented")!.value,
-      },
-      {
-        rank: ranks[2].name,
-        role: interaction.options.get("skilled")!.value,
-      },
-      {
-        rank: ranks[3].name,
-        role: interaction.options.get("exceptional")!.value,
-      },
-      {
-        rank: ranks[4].name,
-        role: interaction.options.get("elite")!.value,
-      }
-    );
-    interaction.reply("The rank roles have been set successfully");
+    try {
+      await RankRoles.create(
+        {
+          rank: ranks[0].name,
+          role: interaction.options.get("rookie")!.value,
+        },
+        {
+          rank: ranks[1].name,
+          role: interaction.options.get("talented")!.value,
+        },
+        {
+          rank: ranks[2].name,
+          role: interaction.options.get("skilled")!.value,
+        },
+        {
+          rank: ranks[3].name,
+          role: interaction.options.get("exceptional")!.value,
+        },
+        {
+          rank: ranks[4].name,
+          role: interaction.options.get("elite")!.value,
+        }
+      );
+      interaction.reply("The rank roles have been set successfully");
+    } catch (err) {
+      interaction.reply("Something went wrong, check out the logs");
+    }
   },
 };
