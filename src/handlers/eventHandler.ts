@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import getAllFiles from "../utils/getAllFiles";
+import getAllFiles from "@/utils/get-all-files";
 import { join } from "path";
 
 export default function (client: Client) {
@@ -7,7 +7,7 @@ export default function (client: Client) {
 
   for (const eventFolder of eventFolders) {
     const eventFiles = getAllFiles(eventFolder);
-    eventFiles.sort((a, b) => (a > b ? 1 : -1));
+    eventFiles.sort((a: string, b: string) => (a > b ? 1 : -1));
     const eventName = eventFolder.replace(/\\/gi, "/").split("/").pop();
 
     client.on(eventName as string, async (...args) => {

@@ -1,5 +1,3 @@
-import { Client } from "discord.js";
-
-export default async function (client: Client) {
+export default async function () {
   console.log(`[-] Everything is ready`);
 }

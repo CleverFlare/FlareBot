@@ -1,6 +1,6 @@
 # Flare Bot
 
-This project is a discord bot project for my personal use, it's designed to perform multiple tasks, but its main goal is to ease certain routines and to keep server members engaged by things like the leveling and ranking systems etc etc...
+This project is a discord bot project for my personal use, it's designed to perform multiple tasks, but its main goal is to ease certain routines and to keep server members engaged via systems such as the leveling and ranking systems etc...
 
 ## Technologies used for this project
 

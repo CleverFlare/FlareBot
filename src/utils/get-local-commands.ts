@@ -1,7 +1,6 @@
 import { Collection } from "discord.js";
-import { readdirSync } from "fs";
 import { join } from "path";
-import getAllFiles from "./getAllFiles";
+import getAllFiles from "@/utils/get-all-files";
 
 export default function () {
   const commands = new Collection();
@@ -16,7 +15,7 @@ export default function () {
         commands.set(commandObject.data.name, commandObject);
       else
         console.log(
-          `[WARNING] The command at ${commandFile} is missing required "data" or "execute" properties`
+          `[WARNING] The command at ${commandFile} is missing required "data" or "execute" properties`,
         );
     }
   }

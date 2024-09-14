@@ -6,13 +6,13 @@ export type User = Client & {
 
 export default async function (
   client: Client,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) {
   if (interaction.user.bot) return;
   if (!interaction.isChatInputCommand()) return;
 
   const command = (interaction.client as User).commands?.get(
-    interaction.commandName
+    interaction.commandName,
   );
 
   if (!command) {

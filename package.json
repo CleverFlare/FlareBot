@@ -20,7 +20,15 @@
     "nlpcloud": "^1.0.43"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.10.0",
+    "@types/eslint": "^9.6.1",
     "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import-x": "^4.2.1",
     "nodemon": "^2.0.22",
     "rimraf": "^4.4.1",
     "ts-node": "^10.9.1",
