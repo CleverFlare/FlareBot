@@ -5,7 +5,7 @@ export type User = Client & {
 };
 
 export default async function (
-  client: Client,
+  _: Client,
   interaction: ChatInputCommandInteraction,
 ) {
   if (interaction.user.bot) return;
