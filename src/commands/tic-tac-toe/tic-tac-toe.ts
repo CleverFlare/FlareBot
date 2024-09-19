@@ -1,4 +1,27 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { constructBoardFromBinary } from "./utils/construct-board-from-binary";
+import { detectWinner } from "./utils/detect-winner";
+
+interface Game {
+  player: string;
+  opponent: string | "NPC";
+  board: [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]];
+  availableMoves: number;
+  playerMoves: number;
+  opponentMoves: number;
+  turn: boolean;
+}
+
+const games: Game[] = [];
+
+const winningCombos = [
+  // horizontal
+  0b111000000, 0b000111000, 0b000000111,
+  // vertical
+  0b100100100, 0b010010010, 0b001001001,
+  // diagonal
+  0b100010001, 0b001010100,
+];
 
 export default {
   data: new SlashCommandBuilder()
@@ -13,20 +36,9 @@ export default {
     ),
   async execute(interaction: ChatInputCommandInteraction) {
     try {
-      interaction.reply(
-        "```\n" +
-          new Array(5)
-            .fill(null)
-            .map((_, index) => {
-              if ((index + 1) % 2) {
-                return "   |   |   ";
-              } else {
-                return "---|---|---";
-              }
-            })
-            .join("\n") +
-          "\n```",
-      );
+      const winner = detectWinner(0b000000000, 0b000000000, winningCombos);
+      if (winner) interaction.reply(winner);
+      else interaction.reply("tie");
     } catch (err) {
       console.log("ERROR:", err);
       interaction.reply(
