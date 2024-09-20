@@ -5,7 +5,7 @@ export type User = Client & {
 };
 
 export default async function (
-  _: Client,
+  client: Client,
   interaction: ChatInputCommandInteraction,
 ) {
   if (interaction.user.bot) return;
@@ -21,7 +21,7 @@ export default async function (
   }
 
   try {
-    await command.execute(interaction);
+    await command.execute(interaction, client);
   } catch (err) {
     console.error(err);
     if (interaction.replied || interaction.deferred) {

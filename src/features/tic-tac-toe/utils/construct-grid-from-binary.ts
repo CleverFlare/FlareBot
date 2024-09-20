@@ -1,18 +1,18 @@
-export function constructBoardFromBinary(
-  playerMoves: number,
-  opponentMoves: number,
+export function constructGridFromBinary(
+  playerMovesInBinary: number,
+  opponentMovesInBinary: number,
 ): string {
   const rowsArray = new Array(5).fill(null);
 
   const defaultMovesRows = ["000", "000", "000"];
 
   const playerMovesRows =
-    playerMoves
+    playerMovesInBinary
       .toString(2)
       .padStart(9, "0")
       .match(/.{1,3}/g) ?? defaultMovesRows;
   const opponentMovesRows =
-    opponentMoves
+    opponentMovesInBinary
       .toString(2)
       .padStart(9, "0")
       .match(/.{1,3}/g) ?? defaultMovesRows;
@@ -25,7 +25,7 @@ export function constructBoardFromBinary(
       const playerRow = playerMovesRows[index / 2];
       const opponentRow = opponentMovesRows[index / 2];
 
-      return ` ${!!+playerRow[0] ? "x" : !!+opponentRow[0] ? "O" : " "} | ${!!+playerRow[1] ? "x" : !!+opponentRow[1] ? "O" : " "} | ${!!+playerRow[2] ? "x" : !!+opponentRow[2] ? "O" : " "} `;
+      return ` ${!!+playerRow[0] ? "x" : !!+opponentRow[0] ? "o" : " "} | ${!!+playerRow[1] ? "x" : !!+opponentRow[1] ? "o" : " "} | ${!!+playerRow[2] ? "x" : !!+opponentRow[2] ? "o" : " "} `;
     } else {
       return "---|---|---";
     }
