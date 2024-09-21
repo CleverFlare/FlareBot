@@ -12,10 +12,14 @@ const routes = {
 
 export type Routes = typeof routes;
 
-export default async function (interaction: ChatInputCommandInteraction) {
+export default async function (
+  interaction: ChatInputCommandInteraction,
+  client: Client,
+) {
   router.createRouter<Routes>({
     routes,
     initialRoute: "confirmation",
     interaction,
+    client,
   });
 }

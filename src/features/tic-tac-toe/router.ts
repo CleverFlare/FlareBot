@@ -29,6 +29,7 @@ interface Config<T> {
   initialRoute: T;
   routes: Routes;
   interaction: ChatInputCommandInteraction;
+  client: Client;
 }
 
 export class Router extends EventEmitter {
@@ -45,13 +46,13 @@ export class Router extends EventEmitter {
     this.initialRoute = config.initialRoute as string;
 
     const reply = await config.interaction.reply(
-      this.routes[this.initialRoute!](config.interaction).reply,
+      this.routes[this.initialRoute!](config.interaction, config.client).reply,
     );
 
     this.currentRoute = this.initialRoute;
 
     this.on("navigate", (screen: keyof typeof this.routes) => {
-      reply.edit(this.routes[screen](config.interaction).reply);
+      reply.edit(this.routes[screen](config.interaction, config.client).reply);
       this.currentRoute = screen;
     });
 
@@ -62,6 +63,7 @@ export class Router extends EventEmitter {
     collector.on("collect", (i) => {
       const buttonEvents = this.routes?.[this.currentRoute]?.(
         config.interaction,
+        config.client,
       )?.buttonEvents;
 
       if (!buttonEvents) return;
