@@ -1,21 +1,18 @@
-import {
-  ChatInputCommandInteraction,
-  EmbedBuilder,
-  InteractionReplyOptions,
-  MessagePayload,
-} from "discord.js";
-import { RouteReturnedType } from "../../router";
+import { EmbedBuilder } from "discord.js";
+import { Route } from "../../router";
 
-export default function testRoute(
-  interaction: ChatInputCommandInteraction,
-): RouteReturnedType {
+const testRoute: Route = () => {
   const confirmationEmbed = new EmbedBuilder()
     .setTitle("Test Screen")
     .setDescription("Is everything working alright?");
 
   return {
-    content: "",
-    embeds: [confirmationEmbed],
-    components: [],
+    reply: {
+      content: "",
+      embeds: [confirmationEmbed],
+      components: [],
+    },
   };
-}
+};
+
+export default testRoute;

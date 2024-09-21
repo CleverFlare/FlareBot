@@ -3,15 +3,12 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
-  ChatInputCommandInteraction,
   EmbedBuilder,
 } from "discord.js";
 import { router, Routes } from "../..";
-import { RouteReturnedType } from "../../router";
+import { Route } from "../../router";
 
-export default function confirmationRoute(
-  interaction: ChatInputCommandInteraction,
-): RouteReturnedType {
+const confirmationRoute: Route = (interaction) => {
   const confirmationEmbed = new EmbedBuilder()
     .setTitle("Tic Tac Toe Challenge")
     .setDescription(
@@ -39,9 +36,11 @@ export default function confirmationRoute(
   }
 
   return {
-    embeds: [confirmationEmbed],
-    components: [actionRow],
-    content: `<@${interaction.options.getUser("opponent")?.id}>`,
+    reply: {
+      embeds: [confirmationEmbed],
+      components: [actionRow],
+      content: `<@${interaction.options.getUser("opponent")?.id}>`,
+    },
     buttonEvents: [
       {
         customId: "accept",
@@ -49,4 +48,6 @@ export default function confirmationRoute(
       },
     ],
   };
-}
+};
+
+export default confirmationRoute;
