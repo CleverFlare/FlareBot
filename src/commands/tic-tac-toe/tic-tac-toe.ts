@@ -14,6 +14,7 @@ import { findGame } from "./functions/store";
 import { createConfirmationComponents } from "./utils/create-confirmation-embed";
 import EventEmitter from "events";
 import { createTimeoutEmbed } from "./utils/create-timeout-embed";
+import { handleConfirmation } from "./functions/handle-confirmation";
 
 const winningCombos = [
   // horizontal
@@ -46,55 +47,14 @@ export default {
 
       // handle confirmation before beginning
       if (opponentId !== undefined) {
-        const confirmationComponents = createConfirmationComponents(
+        const reply = await handleConfirmation({
+          interaction,
           playerId,
           opponentId,
-        );
-
-        const reply = await interaction.reply({
-          content: `<@${opponentId}>`,
-          embeds: [confirmationComponents.confirmationEmbed],
-          components: [confirmationComponents.buttons],
         });
 
-        const collector = reply.createMessageComponentCollector({
-          filter: (i) => i.user.id === opponentId,
-          time: 30_000,
-        });
-
-        collector.on("collect", async (i) => {
-          await i.deferReply();
-
-          if (i.customId === "accept") {
-            confirmationEmitter.emit("confirm");
-            i.deferUpdate();
-          }
-
-          if (i.customId === "deny") {
-            i.editReply({
-              embeds: [confirmationComponents.rejectionEmbed],
-              components: [],
-            });
-          }
-        });
-
-        collector.on("end", () => {
-          const timeoutEmbed = createTimeoutEmbed();
-          reply.edit({
-            embeds: [timeoutEmbed],
-            components: [],
-          });
-        });
+        if (reply.type === "timeout" || reply.type === "reject") return;
       }
-
-      // begin the game only on comfirmation using the event "confirm" from confirmation event emitter
-      confirmationEmitter.on("confirm", () => {
-        interaction.editReply({
-          content: `Beginning the game (Coming soon)`,
-          embeds: [],
-          components: [],
-        });
-      });
 
       // let game = findGame(playerId, opponentId);
       //

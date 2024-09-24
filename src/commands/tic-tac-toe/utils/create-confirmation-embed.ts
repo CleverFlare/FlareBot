@@ -26,20 +26,17 @@ export function createConfirmationComponents(
     .setLabel("Accept")
     .setStyle(ButtonStyle.Success);
 
-  const denyButton = new ButtonBuilder()
-    .setCustomId("deny")
-    .setLabel("Deny")
+  const rejectButton = new ButtonBuilder()
+    .setCustomId("reject")
+    .setLabel("Reject")
     .setStyle(ButtonStyle.Danger);
-
-  const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
-    acceptButton,
-    denyButton,
-  ]);
 
   return {
     confirmationEmbed,
-    timeoutEmbed,
     rejectionEmbed,
-    buttons: actionRow,
+    buttons: {
+      accept: acceptButton,
+      reject: rejectButton,
+    },
   };
 }
