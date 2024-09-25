@@ -1,35 +1,14 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ChatInputCommandInteraction,
-  ComponentType,
-  EmbedBuilder,
-  SlashCommandBuilder,
-} from "discord.js";
-import { constructBoardFromBinary } from "./utils/construct-board-from-binary";
-import { createChoicesButtons } from "./utils/create-buttons-from-binary";
-import { detectWinner } from "./utils/detect-winner";
-import { findGame } from "./functions/store";
-import { createConfirmationComponents } from "./utils/create-confirmation-embed";
-import EventEmitter from "events";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { createTimeoutEmbed } from "./utils/create-timeout-embed";
 import { handleConfirmation } from "./functions/handle-confirmation";
-
-const winningCombos = [
-  // horizontal
-  0b111000000, 0b000111000, 0b000000111,
-  // vertical
-  0b100100100, 0b010010010, 0b001001001,
-  // diagonal
-  0b100010001, 0b001010100,
-];
-
-const confirmationEmitter = new EventEmitter();
+import { createRejectionEmbed } from "./utils/create-rejection-embed";
+import { createConfirmationEmbed } from "./utils/create-confirmation-embed";
+import { createAcceptButton } from "./utils/create-accept-button";
+import { createRejectButton } from "./utils/create-reject-button";
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("tic-tac")
+    .setName("tic-tac-toe")
     .setDescription(
       "Play with the computer or with your friend the famous Tic Tac Toe game.",
     )
@@ -45,19 +24,29 @@ export default {
       const opponentId: string | undefined =
         interaction.options.getUser("opponent")?.id;
 
-      // handle confirmation before beginning
+      // confirm challenge acceptance from the opponent if an opponent specified
       if (opponentId !== undefined) {
-        const reply = await handleConfirmation({
+        const embeds = {
+          confirmation: createConfirmationEmbed(playerId),
+          rejection: createRejectionEmbed(opponentId),
+          timeout: createTimeoutEmbed(opponentId),
+        };
+        const buttons = {
+          accept: createAcceptButton(),
+          reject: createRejectButton(),
+        };
+
+        const response = await handleConfirmation({
           interaction,
-          playerId,
           opponentId,
+          embeds,
+          buttons,
         });
 
-        if (reply.type === "timeout" || reply.type === "reject") return;
+        // if the confirmation message timeout or is rejected, return instead of proceeding
+        if (response.type === "timeout" || response.type === "reject") return;
       }
 
-      // let game = findGame(playerId, opponentId);
-      //
       // const initialEmbed = new EmbedBuilder()
       //   .setTitle("Tic Tac Toe Game")
       //   .setDescription(
