@@ -14,7 +14,7 @@ import { createRejectButton } from "./utils/create-reject-button";
 import { createMatchDataEmbed } from "./utils/create-match-data-embed";
 import { constructGridFromBinary } from "./utils/construct-board-from-binary";
 import { createChoiceButtons } from "./utils/create-choice-buttons";
-import { emptyCellsBinary } from "./data";
+import { emptyCellsBinary } from "./constants";
 
 export default {
   data: new SlashCommandBuilder()
