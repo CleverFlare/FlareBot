@@ -1,10 +1,19 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from "discord.js";
 import { createTimeoutEmbed } from "./utils/create-timeout-embed";
 import { handleConfirmation } from "./functions/handle-confirmation";
 import { createRejectionEmbed } from "./utils/create-rejection-embed";
 import { createConfirmationEmbed } from "./utils/create-confirmation-embed";
 import { createAcceptButton } from "./utils/create-accept-button";
 import { createRejectButton } from "./utils/create-reject-button";
+import { createMatchDataEmbed } from "./utils/create-match-data-embed";
+import { constructGridFromBinary } from "./utils/construct-board-from-binary";
+import { createChoiceButtons } from "./utils/create-choice-buttons";
 
 export default {
   data: new SlashCommandBuilder()
@@ -47,13 +56,20 @@ export default {
         if (response.type === "timeout" || response.type === "reject") return;
       }
 
-      // const initialEmbed = new EmbedBuilder()
-      //   .setTitle("Tic Tac Toe Game")
-      //   .setDescription(
-      //     `A game started between <@${game.player}> and ${game.opponent === "NPC" ? "the computer" : `<@${game.opponent}>`}`,
-      //   )
-      //   .setColor("Blue");
-      //
+      // const game = findGame(playerId, opponentId);
+
+      const matchDataEmbed = createMatchDataEmbed(playerId, opponentId);
+      const ticTacGrid = constructGridFromBinary(0b000000000, 0b000000000);
+      const ticTacGridEmbed = new EmbedBuilder().setDescription(
+        "```" + ticTacGrid + "```",
+      );
+      const choiceButtons = createChoiceButtons();
+
+      await interaction.editReply({
+        embeds: [matchDataEmbed, ticTacGridEmbed],
+        components: choiceButtons,
+      });
+
       // const boardEmbed = new EmbedBuilder()
       //   .setDescription(
       //     `Turn: <@${userTurn}>\n${constructBoardFromBinary(

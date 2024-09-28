@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 type Button = {
   emoji: string;
@@ -44,7 +44,7 @@ const buttons: Button[] = [
   },
 ];
 
-export function createChoicesButtons() {
+export function createChoiceButtons() {
   const results = [];
 
   for (const button of buttons) {
@@ -56,5 +56,9 @@ export function createChoicesButtons() {
     );
   }
 
-  return results;
+  return [
+    new ActionRowBuilder<ButtonBuilder>().addComponents(results.slice(0, 3)),
+    new ActionRowBuilder<ButtonBuilder>().addComponents(results.slice(3, 6)),
+    new ActionRowBuilder<ButtonBuilder>().addComponents(results.slice(6, 9)),
+  ];
 }
