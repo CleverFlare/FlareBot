@@ -14,6 +14,7 @@ import { createRejectButton } from "./utils/create-reject-button";
 import { createMatchDataEmbed } from "./utils/create-match-data-embed";
 import { constructGridFromBinary } from "./utils/construct-board-from-binary";
 import { createChoiceButtons } from "./utils/create-choice-buttons";
+import { emptyCellsBinary } from "./data";
 
 export default {
   data: new SlashCommandBuilder()
@@ -59,7 +60,10 @@ export default {
       // const game = findGame(playerId, opponentId);
 
       const matchDataEmbed = createMatchDataEmbed(playerId, opponentId);
-      const ticTacGrid = constructGridFromBinary(0b000000000, 0b000000000);
+      const ticTacGrid = constructGridFromBinary(
+        emptyCellsBinary,
+        emptyCellsBinary,
+      );
       const ticTacGridEmbed = new EmbedBuilder().setDescription(
         "```" + ticTacGrid + "```",
       );
