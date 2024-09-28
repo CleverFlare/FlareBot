@@ -8,7 +8,14 @@ export default function () {
   const commandsCategories = getAllFiles(commandsPath, true);
 
   for (const commandsCategory of commandsCategories) {
-    const commandFiles = getAllFiles(commandsCategory);
+    let commandFiles = getAllFiles(commandsCategory);
+
+    commandFiles = commandFiles.filter(
+      (commandFile) =>
+        commandFile.endsWith(".command.ts") ||
+        commandFile.endsWith(".command.js"),
+    );
+
     for (const commandFile of commandFiles) {
       const commandObject = require(commandFile).default;
       if ("data" in commandObject && "execute" in commandObject)
