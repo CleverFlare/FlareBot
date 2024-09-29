@@ -26,4 +26,6 @@ export function createCollector(
   collector.on("collect", (i) => onCollect(i, collector));
 
   collector.on("end", (_, reason) => onEnd(reason));
+
+  return collector;
 }

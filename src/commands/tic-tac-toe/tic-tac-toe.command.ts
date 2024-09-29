@@ -1,5 +1,6 @@
 import {
   ChatInputCommandInteraction,
+  ComponentType,
   EmbedBuilder,
   SlashCommandBuilder,
 } from "discord.js";
@@ -12,7 +13,14 @@ import { createRejectButton } from "./utils/create-reject-button";
 import { createMatchDataEmbed } from "./utils/create-match-data-embed";
 import { constructGridFromBinary } from "./utils/construct-board-from-binary";
 import { createChoiceButtons } from "./utils/create-choice-buttons";
-import { emptyCellsBinary } from "./constants";
+import { emptyCellsBinary, winningCombos } from "./constants";
+import { findGame, removeGame } from "./store";
+import { turnGate } from "./functions/turn-gate";
+import { isAvailableMove } from "./functions/is-available-move";
+import { storeMove } from "./functions/store-move";
+import { detectWinner } from "./functions/detect-winner";
+import { handleResult } from "./functions/handle-result";
+import { handleTimeout } from "./functions/handle-timeout";
 
 export default {
   data: new SlashCommandBuilder()
@@ -55,166 +63,100 @@ export default {
         if (response.type === "timeout" || response.type === "reject") return;
       }
 
-      // const game = findGame(playerId, opponentId);
+      const game = findGame(playerId, opponentId);
 
-      const matchDataEmbed = createMatchDataEmbed(playerId, opponentId);
+      const matchDataEmbed = createMatchDataEmbed(
+        playerId,
+        opponentId,
+        game.turn.userId,
+      );
       const ticTacGrid = constructGridFromBinary(
         emptyCellsBinary,
         emptyCellsBinary,
       );
-      const ticTacGridEmbed = new EmbedBuilder().setDescription(
-        "```" + ticTacGrid + "```",
-      );
+      const ticTacGridEmbed = new EmbedBuilder()
+        .setColor("Blue")
+        .setDescription("```" + ticTacGrid + "```");
       const choiceButtons = createChoiceButtons();
 
-      await interaction.editReply({
+      const reply = await interaction.editReply({
         embeds: [matchDataEmbed, ticTacGridEmbed],
         components: choiceButtons,
       });
 
-      // const boardEmbed = new EmbedBuilder()
-      //   .setDescription(
-      //     `Turn: <@${userTurn}>\n${constructBoardFromBinary(
-      //       game.playerMoves,
-      //       game.opponentMoves,
-      //     )}`,
-      //   )
-      //   .setColor("Blue");
-      //
-      // let buttons = createChoicesButtons();
-      //
-      // let actionRows = [
-      //   new ActionRowBuilder<ButtonBuilder>().addComponents(
-      //     buttons.slice(0, 3),
-      //   ),
-      //   new ActionRowBuilder<ButtonBuilder>().addComponents(
-      //     buttons.slice(3, 6),
-      //   ),
-      //   new ActionRowBuilder<ButtonBuilder>().addComponents(
-      //     buttons.slice(6, 9),
-      //   ),
-      // ];
-      //
-      // const reply = await interaction.reply({
-      //   embeds: [initialEmbed, boardEmbed],
-      //   components: [...actionRows],
-      //   fetchReply: true,
-      // });
-      //
-      // const collector = reply.createMessageComponentCollector({
-      //   componentType: ComponentType.Button,
-      //   filter: (i) => i.user.id === userTurn || !gameOver,
-      //   time: 30_000,
-      // });
-      //
-      // collector.on("collect", async (interaction) => {
-      //   if (interaction.user.id !== userTurn) {
-      //     if (interaction.user.id === game.opponent) {
-      //       interaction.reply({
-      //         content: "It's not your turn yet!",
-      //         ephemeral: true,
-      //       });
-      //     } else {
-      //       interaction.reply({
-      //         content:
-      //           "You're not a party in this game. Feel free to begin a new one if you like.",
-      //         ephemeral: true,
-      //       });
-      //     }
-      //
-      //     return;
-      //   }
-      //
-      //   if (
-      //     (game.availableMoves | parseInt(interaction.customId, 2)) ===
-      //     game.availableMoves
-      //   ) {
-      //     interaction.reply({
-      //       content:
-      //         "This position is occupied! Try playing in another position.",
-      //       ephemeral: true,
-      //     });
-      //     return;
-      //   }
-      //
-      //   if (userTurn === game.player) {
-      //     game.playerMoves |= parseInt(interaction.customId, 2);
-      //   } else if (userTurn === game.opponent) {
-      //     game.opponentMoves |= parseInt(interaction.customId, 2);
-      //   }
-      //
-      //   game.turn = !game.turn;
-      //
-      //   userTurn = game.turn ? game.player : game.opponent;
-      //
-      //   const winner = detectWinner(
-      //     game.playerMoves,
-      //     game.opponentMoves,
-      //     winningCombos,
-      //   );
-      //
-      //   if (0b111111111 === game.availableMoves && !winner) {
-      //     boardEmbed.setDescription(
-      //       `${constructBoardFromBinary(game.playerMoves, game.opponentMoves)}`,
-      //     );
-      //
-      //     initialEmbed.setDescription(
-      //       `A game started between <@${game.player}> and ${game.opponent === "NPC" ? "the computer" : `<@${game.opponent}>`}\nResult: Tie`,
-      //     );
-      //
-      //     await reply.edit({
-      //       embeds: [initialEmbed, boardEmbed],
-      //       components: [],
-      //     });
-      //
-      //     await interaction.deferUpdate();
-      //
-      //     const gameIndex = games.indexOf(game);
-      //
-      //     games.splice(gameIndex, 1);
-      //
-      //     return;
-      //   }
-      //
-      //   if (!winner) {
-      //     boardEmbed.setDescription(
-      //       `Turn: <@${userTurn}>\n${constructBoardFromBinary(
-      //         game.playerMoves,
-      //         game.opponentMoves,
-      //       )}`,
-      //     );
-      //
-      //     await reply.edit({
-      //       embeds: [initialEmbed, boardEmbed],
-      //       components: [...actionRows],
-      //     });
-      //   } else {
-      //     boardEmbed
-      //       .setDescription(
-      //         `${constructBoardFromBinary(game.playerMoves, game.opponentMoves)}`,
-      //       )
-      //       .setColor("Green");
-      //
-      //     initialEmbed
-      //       .setDescription(
-      //         `A game started between <@${game.player}> and ${game.opponent === "NPC" ? "the computer" : `<@${game.opponent}>`}\nWinner: <@${winner === "player" ? game.player : game.opponent}>`,
-      //       )
-      //       .setColor("Green");
-      //
-      //     await reply.edit({
-      //       embeds: [initialEmbed, boardEmbed],
-      //       components: [],
-      //     });
-      //
-      //     const gameIndex = games.indexOf(game);
-      //
-      //     games.splice(gameIndex, 1);
-      //   }
-      //
-      //   await interaction.deferUpdate();
-      //
-      //   console.log("Game's Current State:", game);
-      // });
+      const collector = reply.createMessageComponentCollector({
+        componentType: ComponentType.Button,
+        time: 30_000,
+      });
+
+      collector.on("collect", async (interaction) => {
+        const moveInBinary = parseInt(interaction.customId, 2);
+
+        const isAllowed = await turnGate(
+          interaction,
+          game.turn.userId,
+          playerId,
+          opponentId,
+        );
+
+        if (isAllowed === false) return;
+
+        isAvailableMove(interaction, game.availableMoves, moveInBinary);
+
+        storeMove(
+          game.turn.userId,
+          game.playerId,
+          game.opponentId,
+          () => (game.playerMoves |= moveInBinary),
+          () => (game.opponentMoves |= moveInBinary),
+        );
+
+        const isOpponentCpu = !opponentId;
+        if (!isOpponentCpu) game.turn.swap();
+
+        matchDataEmbed.setFields([
+          { name: "Turn", value: `<@${game.turn.userId}>` },
+        ]);
+
+        const ticTacGrid = constructGridFromBinary(
+          game.playerMoves,
+          game.opponentMoves,
+        );
+
+        ticTacGridEmbed.setDescription("```" + ticTacGrid + "```");
+
+        await reply.edit({
+          embeds: [matchDataEmbed, ticTacGridEmbed],
+          components: choiceButtons,
+        });
+
+        const winner = detectWinner(
+          game.playerMoves,
+          game.opponentMoves,
+          winningCombos,
+        );
+
+        await handleResult(
+          reply,
+          game.availableMoves,
+          winner,
+          playerId,
+          opponentId,
+          matchDataEmbed,
+          ticTacGridEmbed,
+          () => collector.stop("finished"),
+        );
+
+        await interaction.deferUpdate();
+      });
+
+      collector.on("end", async (_, reason) => {
+        if (reason === "time") {
+          await handleTimeout(reply);
+        }
+
+        removeGame(game);
+      });
     } catch (err) {
       console.log("ERROR:", err);
       interaction.reply(

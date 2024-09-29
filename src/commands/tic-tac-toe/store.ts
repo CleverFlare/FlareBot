@@ -5,7 +5,7 @@ class Game {
 
   constructor(
     public playerId: string,
-    public opponentId: string | "NPC" = "NPC",
+    public opponentId: string | "CPU" = "CPU",
     public playerMoves: number = zeroMovesBinary,
     public opponentMoves: number = zeroMovesBinary,
     turn: "player" | "opponent" = "player",
@@ -35,7 +35,7 @@ class Turn {
     else this.#_turn = 1;
   }
 
-  get turn() {
+  get userId() {
     return this.#_turn === 0 ? this.#_playerId : this.#_opponentId;
   }
 
@@ -48,7 +48,7 @@ class Turn {
 const games: Game[] = [];
 
 export function findGame(playerId: string, opponentId?: string): Game {
-  opponentId = opponentId !== undefined ? opponentId : "NPC";
+  opponentId = opponentId !== undefined ? opponentId : "CPU";
 
   let game = games.find(
     (game) => game.playerId === playerId && game.opponentId === opponentId,
@@ -61,4 +61,10 @@ export function findGame(playerId: string, opponentId?: string): Game {
   }
 
   return game!;
+}
+
+export function removeGame(game: Game): void {
+  const gameIndex = games.findIndex((currentGame) => currentGame === game);
+
+  games.splice(gameIndex, 1);
 }

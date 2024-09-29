@@ -58,7 +58,7 @@ export function handleConfirmation({
       [embeds.confirmation],
       [
         buttons.accept.setCustomId("accept"),
-        buttons.accept.setCustomId("reject"),
+        buttons.reject.setCustomId("reject"),
       ],
     );
 
