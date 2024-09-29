@@ -21,6 +21,7 @@ import { storeMove } from "./functions/store-move";
 import { detectWinner } from "./functions/detect-winner";
 import { handleResult } from "./functions/handle-result";
 import { handleTimeout } from "./functions/handle-timeout";
+import { handleCpuMove } from "./functions/handle-cpu";
 
 export default {
   data: new SlashCommandBuilder()
@@ -29,10 +30,7 @@ export default {
       "Play with the computer or with your friend the famous Tic Tac Toe game.",
     )
     .addUserOption((option) =>
-      option
-        .setName("opponent")
-        .setDescription("Choose your opponent.")
-        .setRequired(true),
+      option.setName("opponent").setDescription("Choose your opponent."),
     ),
   async execute(interaction: ChatInputCommandInteraction) {
     try {
@@ -40,8 +38,10 @@ export default {
       const opponentId: string | undefined =
         interaction.options.getUser("opponent")?.id;
 
+      const isOpponentCpu = !opponentId;
+
       // confirm challenge acceptance from the opponent if an opponent specified
-      if (opponentId !== undefined) {
+      if (!isOpponentCpu) {
         const embeds = {
           confirmation: createConfirmationEmbed(playerId),
           rejection: createRejectionEmbed(opponentId),
@@ -61,6 +61,8 @@ export default {
 
         // if the confirmation message timeout or is rejected, return instead of proceeding
         if (response.type === "timeout" || response.type === "reject") return;
+      } else {
+        await interaction.deferReply();
       }
 
       const game = findGame(playerId, opponentId);
@@ -111,8 +113,14 @@ export default {
           () => (game.opponentMoves |= moveInBinary),
         );
 
-        const isOpponentCpu = !opponentId;
         if (!isOpponentCpu) game.turn.swap();
+
+        handleCpuMove(
+          game.availableMoves,
+          game.opponentMoves,
+          opponentId,
+          (cpuMove) => (game.opponentMoves |= cpuMove),
+        );
 
         matchDataEmbed.setFields([
           { name: "Turn", value: `<@${game.turn.userId}>` },
