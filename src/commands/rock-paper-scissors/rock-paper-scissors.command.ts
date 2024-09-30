@@ -22,7 +22,7 @@ export default {
   data: new SlashCommandBuilder()
     .setName("rock-paper-scissors")
     .setDescription(
-      "Play with the computer or with your friend the famous Tic Tac Toe game.",
+      "Play with the computer or with your friend the famous Rock Paper Scissors game.",
     )
     .addUserOption((option) =>
       option.setName("opponent").setDescription("Choose your opponent."),
