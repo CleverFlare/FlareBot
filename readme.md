@@ -1,19 +1,17 @@
 # Flare Bot
 
-This project is a discord bot project for my personal use, it's designed to perform multiple tasks, but its main goal is to ease certain routines and to keep server members engaged via systems such as the leveling and ranking systems etc...
+Flare bot is an A.I. powered Discord bot that is capable of performing multiple tasks and has a variaty of games to keep server members as engaged as possible.
 
 ## Technologies used for this project
 
 - TypeScript
 - DiscordJS
-- MongoDB for the database
-- Mongoose for MongoDB ODM
 
 ## Roadmap
 
-- [x] Create the leveling system
-- [x] Create the ranking system
-- [x] Add a leaderboard
-- [x] Add a leveling up command
-- [x] Add a profile command to see the profile
-- [x] Extend the profile command to allow you to see others' profile
+- [x] Tic Tac Toe Game
+- [ ] Rock Paper Scissors Game
+- [ ] Game similar among us
+- [ ] Quiz System
+- [ ] Scheduling System
+- [ ] Leveling System
