@@ -113,8 +113,8 @@ export default {
           );
 
           const winner = detectWinner(
-            game.playerId,
-            game.opponentId,
+            playerId,
+            opponentId,
             game.playerChoice!,
             game.opponentChoice!,
             {
