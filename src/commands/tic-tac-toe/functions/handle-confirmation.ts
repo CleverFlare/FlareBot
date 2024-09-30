@@ -30,6 +30,7 @@ export function handleConfirmation({
 }: HandleConfirmationProps): ReturnType {
   return globalHandleConfirmation({
     interaction,
+    message: `<@${opponentId}>`,
     embeds,
     buttons,
     allowedUsers: [opponentId],

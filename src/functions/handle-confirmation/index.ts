@@ -20,6 +20,7 @@ export type Dependencies = {
   onAccept?: (i: ButtonInteraction) => void;
   onReject?: (i: ButtonInteraction) => void;
   onTimeout?: () => void;
+  message?: string;
   embeds: {
     confirmation: EmbedBuilder;
     rejection?: EmbedBuilder;
@@ -45,6 +46,7 @@ export function handleConfirmation({
   onAccept = () => null,
   onReject = () => null,
   onTimeout = () => null,
+  message,
   embeds,
   buttons,
   allowedUsers = [],
@@ -60,6 +62,7 @@ export function handleConfirmation({
         buttons.accept.setCustomId("accept"),
         buttons.reject.setCustomId("reject"),
       ],
+      message,
     );
 
     const onCollect = async (
