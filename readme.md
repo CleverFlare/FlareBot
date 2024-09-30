@@ -11,6 +11,7 @@ Flare bot is an A.I. powered Discord bot that is capable of performing multiple 
 
 - [x] Tic Tac Toe Game
 - [x] Rock Paper Scissors Game
+- [ ] Ask A.I. functionality
 - [ ] Game similar among us
 - [ ] Quiz System
 - [ ] Scheduling System
