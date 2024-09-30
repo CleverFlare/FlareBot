@@ -9,8 +9,8 @@ export async function turnGate(
   const interactingUserId = interaction.user.id;
 
   const isCorrectUser = interactingUserId === turnUser;
-  const isOpponentCpu = !opponentId;
-  if (isCorrectUser || isOpponentCpu) return; // guard clouse
+
+  if (isCorrectUser) return; // guard clouse
 
   const isPlayer = interactingUserId === playerId;
   const isOpponent = interactingUserId === opponentId;
