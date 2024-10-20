@@ -46,6 +46,7 @@ export default {
     if (!text) {
       await interaction.reply({
         content: "You must add in the text you want to proofread.",
+        ephemeral: true,
       });
 
       return;
